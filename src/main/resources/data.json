@@ -1,0 +1,17 @@
+[
+{"_class": "com.social.media.lists.api.domain.networks.SocialMediaNetwork", "name": "Facebook", "mainPageLink": "https://www.facebook.com/", "id": "1"},
+{"_class": "com.social.media.lists.api.domain.networks.SocialMediaNetwork", "name": "Twitter", "mainPageLink": "https://twitter.com/login?lang=pt", "id": "2"},
+{"ssn": 123456789, "_class": "com.social.media.lists.api.domain.people.Person", "listsBelongsTo": ["List1", "List2"], "fullName": "Pedro Fortini", "id": "1"},
+{"ssn": 123456787, "_class": "com.social.media.lists.api.domain.people.Person", "listsBelongsTo": ["List1"], "fullName": "Bruce Dickinson", "id": "2"},
+{"id": "1", "_class": "com.social.media.lists.api.domain.people.PeopleList", "name": "List1", "people": ["1", "2"]},
+{"id": "2", "_class": "com.social.media.lists.api.domain.people.PeopleList", "name": "List2", "people": ["1"]},
+{"person": "1", "login": "pedrofortini1", "_class": "com.social.media.lists.api.domain.networks.SocialMediaAccount", "socialMediaNetwork": "1", "id": "1"},
+{"person": "1", "login": "pedrofortini2", "_class": "com.social.media.lists.api.domain.networks.SocialMediaAccount", "socialMediaNetwork": "1", "id": "2"},
+{"person": "1", "login": "pedrofortini", "_class": "com.social.media.lists.api.domain.networks.SocialMediaAccount", "socialMediaNetwork": "2", "id": "3"},
+{"person": "2", "login": "bruce", "_class": "com.social.media.lists.api.domain.networks.SocialMediaAccount", "socialMediaNetwork": "1", "id": "4"},
+{"person": "2", "login": "bruce1", "_class": "com.social.media.lists.api.domain.networks.SocialMediaAccount", "socialMediaNetwork": "2", "id": "5"},
+{"account": "4", "content": "Post number: 0 from Facebook", "createdDate": "2020-05-04T00:42:36.576239", "_class": "com.social.media.lists.api.domain.posts.Post", "linkPostOriginalNetwork": "https://www.facebook.com/0", "id": "0"},
+{"account": "5", "content": "Post number: 1 from Twitter", "createdDate": "2020-05-04T00:42:37.577458", "_class": "com.social.media.lists.api.domain.posts.Post", "linkPostOriginalNetwork": "https://twitter.com/login?lang=pt/1", "id": "1"},
+{"account": "4", "content": "Post number: 2 from Facebook", "createdDate": "2020-05-04T00:42:38.578578", "_class": "com.social.media.lists.api.domain.posts.Post", "linkPostOriginalNetwork": "https://www.facebook.com/2", "id": "2"},
+{"account": "5", "content": "Post number: 3 from Twitter", "createdDate": "2020-05-04T00:42:39.579741", "_class": "com.social.media.lists.api.domain.posts.Post", "linkPostOriginalNetwork": "https://twitter.com/login?lang=pt/3", "id": "3"}
+]

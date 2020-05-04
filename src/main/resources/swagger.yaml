@@ -1,0 +1,189 @@
+swagger: '2.0'
+info:
+  description: API responsible for retrieving social media posts data
+  version: 1.0.0
+  title: Monitor Machines API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: localhost:8080
+basePath: /social-media-lists-api/v1
+tags:
+  - name: Post
+    description: Operations regarding the posts of a Person on a Social Media Network
+
+schemes:
+  - http
+paths:
+  /posts:
+    get:
+      tags:
+        - Post
+      summary: Gets data from all posts on database
+      operationId: getPostsData
+      produces:
+        - "application/json"
+      parameters:
+        - name: "currentPage"
+          in: "query"
+          description: "Current Page"
+          required: true
+          type: "integer"
+          format: "int64"
+        - name: "pageSize"
+          in: "query"
+          description: "Page Size"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        '200':
+          description: "Posts data suscessfully retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PostResponse"
+        '500':
+          description: "Internal error ocurred while getting Post data"
+        '400':
+          description: "Invalid Request"
+        '404':
+          description: "No Posts found"
+
+definitions:
+  MachineRequest:
+    type: object
+    required:
+      - name
+      - machine_is_up
+      - admin_user
+      - ip_address
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Id of the Machine
+      name:
+        type: string
+        description: Name of the Machine
+        minLength: 1
+      ip_address:
+        type: string
+        description: Ip Address of the Machine
+        minLength: 1
+      machine_is_up:
+        type: boolean
+        description: Flag indicating if the machine is running
+      admin_user:
+        type: string
+        description: Login of the Admin User of the Machine
+        minLength: 1
+
+  PostResponse:
+    type: object
+    properties:
+      created_date:
+        type: string
+        description: Date the Post was Posted
+      social_network:
+        type: string
+        description: Name of the Social Network the Post was Posted
+      link_original_post:
+        type: string
+        description: Link to the original post on the Social Network
+      post_content_snippet:
+        type: string
+        description: Snippet of the content of the Post
+      author_name:
+        type: string
+        description: Name of the Author of the Post
+      lists_belongs_to:
+        type: array
+        description: Names of the Lists the Author of the Post Belongs
+        items:
+          type: string
+
+  MachineDetailResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Id of the Machine
+      name:
+        type: string
+        description: Name of the Machine
+        minLength: 1
+      machine_is_up:
+        type: boolean
+        description: Flag indicating if the machine is running
+      ip_address:
+        type: string
+        description: Ip Address of the Machine
+        minLength: 1
+      last_downtime:
+        type: string
+        description: Last timestamp that this machine was down
+      admin_user:
+        type: string
+        description: Login of the Admin User of the Machine
+        minLength: 1
+      users_acess:
+        type: array
+        description: List of login of users that have acess to this machine
+        items:
+          type: string
+        uniqueItems: true
+      machine_events_log:
+        type: array
+        description: List of up and downtime events of this machine
+        items:
+          $ref: '#/definitions/MachineEventLogResponse'
+
+  MachineEventLogResponse:
+    type: object
+    required:
+      - type
+      - time_stamp
+    properties:
+      type:
+        type: string
+        description: Type of event
+        minLength: 1
+      time_stamp:
+        type: string
+        description: Timestamp of the event
+        minLength: 1
+
+  UserTemplate:
+    type: object
+    required:
+      - login
+      - name
+    properties:
+      login:
+        type: string
+        description: Name of the Machine
+        minLength: 1
+      name:
+        type: string
+        description: Name of the Machine
+        minLength: 1
+      user_is_admin:
+        type: boolean
+        description: Flag indicating if the User is an Admin User
+
+  UserAcessRequest:
+    type: object
+    required:
+      - login
+      - name
+    properties:
+      user_login:
+        type: string
+        description: Login of the user requesting acess
+        minLength: 1
+      machine_id:
+        type: integer
+        format: int64
+        description: Id of the machine the user is requesting acess to
