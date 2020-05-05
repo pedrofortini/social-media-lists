@@ -3,6 +3,7 @@ package com.social.media.lists.api.domain.posts.converter;
 import com.social.media.lists.api.application.ServiceConstants;
 import com.social.media.lists.api.domain.posts.Post;
 import io.swagger.model.PostResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -26,19 +27,12 @@ public class PostResponseConverter {
         postResponse.setCreatedDate(convertDateToString(post.getCreatedDate()));
         postResponse.setLinkOriginalPost(post.getLinkPostOriginalNetwork());
         postResponse.setAuthorName(post.getAccount().getPerson().getFullName());
-        postResponse.setListsBelongsTo(post.getAccount().getPerson().getListsBelongsTo());
+        postResponse.setListsBelongsTo(StringUtils.join(
+                post.getAccount().getPerson().getListsBelongsTo(), ","));
         postResponse.setSocialNetwork(post.getAccount().getSocialMediaNetwork().getName());
-        postResponse.setPostContentSnippet(getPostContentSnippet(post.getContent()));
+        postResponse.setPostContent(post.getContent());
 
         return postResponse;
-    }
-
-    private String getPostContentSnippet(String postContent){
-
-        if(postContent.length() <= ServiceConstants.POST_SNIPPET_SIZE){
-            return postContent;
-        }
-        return postContent.substring(0, ServiceConstants.POST_SNIPPET_SIZE);
     }
 
     private String convertDateToString(Date date){

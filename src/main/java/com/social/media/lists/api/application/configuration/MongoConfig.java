@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
 import com.social.media.lists.api.application.ServiceConstants;
 import cz.jirutka.spring.embedmongo.EmbeddedMongoFactoryBean;
-import de.undercouch.bson4jackson.BsonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

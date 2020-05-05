@@ -91,17 +91,15 @@ definitions:
       link_original_post:
         type: string
         description: Link to the original post on the Social Network
-      post_content_snippet:
+      post_content:
         type: string
-        description: Snippet of the content of the Post
+        description: Content of the Post
       author_name:
         type: string
         description: Name of the Author of the Post
       lists_belongs_to:
-        type: array
+        type: string
         description: Names of the Lists the Author of the Post Belongs
-        items:
-          type: string
 
   MachineDetailResponse:
     type: object
