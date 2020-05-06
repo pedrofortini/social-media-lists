@@ -20,6 +20,7 @@ class PostList extends Component {
         networks: '',
         text: '',
         userlogin: '',
+        fullname: '',
         startDate: new Date(),
         endDate: new Date()
     };
@@ -76,6 +77,7 @@ class PostList extends Component {
             networks: item.networks,
             text: item.text,
             userlogin: item.userlogin,
+            fullname: item.fullname,
             startDate: item.startDate,
             endDate: item.endDate
         };
@@ -129,6 +131,7 @@ class PostList extends Component {
                         networks: item.networks,
                         text: item.text,
                         userlogin: item.userlogin,
+                        fullname: item.fullname,
                         startDate: item.startDate,
                         endDate: item.endDate
                     };
@@ -167,6 +170,12 @@ class PostList extends Component {
                         <InputGroup>
                             <Input type="text" name="userlogin" id="userlogin" value={item.userlogin || ''}
                                    onChange={this.handleChange} autoComplete="userlogin" placeholder="Login of the Author"
+                                   style={{width: "370px"}} />
+                        </InputGroup>
+                        <br />
+                        <InputGroup>
+                            <Input type="text" name="fullname" id="fullname" value={item.fullname || ''}
+                                   onChange={this.handleChange} autoComplete="fullname" placeholder="Fullname of the Author"
                                    style={{width: "370px"}} />
                         </InputGroup>
                         <br />

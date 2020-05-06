@@ -1,6 +1,7 @@
 package com.social.media.lists.api.domain.posts.converter;
 
 import com.social.media.lists.api.application.ServiceConstants;
+import com.social.media.lists.api.application.util.DateUtil;
 import com.social.media.lists.api.domain.posts.Post;
 import io.swagger.model.PostResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,7 @@ public class PostResponseConverter {
 
         PostResponse postResponse = new PostResponse();
 
-        postResponse.setCreatedDate(convertDateToString(post.getCreatedDate()));
+        postResponse.setCreatedDate(DateUtil.convertDateToString(post.getCreatedDate()));
         postResponse.setLinkOriginalPost(post.getLinkPostOriginalNetwork());
         postResponse.setAuthorName(post.getAccount().getPerson().getFullName());
         postResponse.setListsBelongsTo(StringUtils.join(
@@ -33,11 +34,5 @@ public class PostResponseConverter {
         postResponse.setPostContent(post.getContent());
 
         return postResponse;
-    }
-
-    private String convertDateToString(Date date){
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        return dateFormat.format(date);
     }
 }

@@ -2,10 +2,7 @@ package com.social.media.lists.api.application.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.social.media.lists.api.application.exception.PersistenceException;
-import com.social.media.lists.api.application.exception.ResourceAlreadyExistsException;
-import com.social.media.lists.api.application.exception.ResourceNotFoundException;
-import com.social.media.lists.api.application.exception.UnprocessableEnityException;
+import com.social.media.lists.api.application.exception.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +19,16 @@ public class ApiExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleExcecaoGenerica(Exception exception) {
+
+        Gson gsonBuilder = new GsonBuilder().create();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(gsonBuilder.toJson(exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidDateFormatException.class)
+    public ResponseEntity<?> handleInvalidDateFormatException(InvalidDateFormatException exception) {
 
         Gson gsonBuilder = new GsonBuilder().create();
 
@@ -61,7 +68,7 @@ public class ApiExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UnprocessableEnityException.class)
-    public ResponseEntity<?> handleUnprocessableEnityException(UnprocessableEnityException exception) {
+    public ResponseEntity<?> handleUnprocessableEntityException(UnprocessableEnityException exception) {
 
         Gson gsonBuilder = new GsonBuilder().create();
 

@@ -2,6 +2,7 @@ package com.social.media.lists.api.application;
 
 public interface MessageConstants {
 
+    String MESSAGE_INVALID_DATE_FORMAT = "Invalid date provided %s";
     String MESSAGE_USER_NOT_FOUND = "Couldn't find User with login %s";
     String MESSAGE_MACHINE_NOT_FOUND = "Couldn't find Machine with id %s";
     String MESSAGE_USER_IS_NOT_ADMIN = "Attempt to assign non-admin user as admin of machine. User login: %s";
