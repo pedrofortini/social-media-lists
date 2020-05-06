@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { InputGroup, Form, Input, Button, ButtonGroup, Container } from 'reactstrap';
+import { InputGroup, Form, FormGroup, Input, Button, ButtonGroup, Container } from 'reactstrap';
 import _ from "lodash";
 import ReactTable from "react-table";
+import DatePicker from 'react-datepicker';
+import { format } from "date-fns";
+
+import 'react-datepicker/dist/react-datepicker.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "react-table/react-table.css";
 import AppNavbar from './AppNavbar';
 
@@ -14,7 +19,9 @@ class PostList extends Component {
         lists: '',
         networks: '',
         text: '',
-        userlogin: ''
+        userlogin: '',
+        startDate: new Date(),
+        endDate: new Date()
     };
 
     constructor() {
@@ -24,6 +31,22 @@ class PostList extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.fetchData = this.fetchData.bind(this);
+        this.handleStartDateChange = this.handleStartDateChange.bind(this);
+        this.handleEndDateChange = this.handleEndDateChange.bind(this);
+    }
+
+    handleStartDateChange(date){
+
+        let item = {...this.state.item};
+        item['startDate'] = date;
+        this.setState({item});
+    }
+
+    handleEndDateChange(date){
+
+        let item = {...this.state.item};
+        item['endDate'] = date;
+        this.setState({item});
     }
 
     handleChange(event) {
@@ -36,18 +59,54 @@ class PostList extends Component {
         this.setState({item});
     }
 
-    async requestData(page, pageSize, sorted, lists, networks, text, userlogin) {
+    async fetchData(state, instance) {
 
-        let filteredData = await ( await fetch('/social-media-lists-api/v1/posts?currentPage='
-        + page + "&pageSize=" + pageSize, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }})).json;
+        const {item} = this.state;
+
+        if (item.startDate.getTime() > item.endDate.getTime()){
+            alert("ERROR: Invalid Date Range! Please provide a valid one.");
+            return;
+        }
+
+        const loadingItem =  {
+            data: item.data,
+            pages: item.pages,
+            loading: true,
+            lists: item.lists,
+            networks: item.networks,
+            text: item.text,
+            userlogin: item.userlogin,
+            startDate: item.startDate,
+            endDate: item.endDate
+        };
+
+        this.setState(loadingItem);
+
+        let page = state.page;
+        let pageSize = state.pageSize;
+        let sorted = state.sorted;
+        let startDate = format(item.startDate, "dd/MM/yyyy");
+        let endDate = format(item.endDate, "dd/MM/yyyy");
+        console.log(startDate);
+        console.log(endDate);
+
+        if(page === undefined && pageSize === undefined && sorted === undefined){
+
+            page = 0;
+            pageSize = 10;
+            sorted = [];
+        }
+
+        const posts = await (await fetch('/social-media-lists-api/v1/posts?currentPage='
+                + page + "&pageSize=" + pageSize, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }})).json();
 
         const sortedData = _.orderBy(
-            filteredData,
+            posts,
             sorted.map(sort => {
                 return row => {
                     if (row[sort.id] === null || row[sort.id] === undefined) {
@@ -55,80 +114,87 @@ class PostList extends Component {
                     }
                     return typeof row[sort.id] === "string"
                         ? row[sort.id].toLowerCase()
-                    :    row[sort.id];
+                        : row[sort.id];
                 };
             }),
             sorted.map(d => (d.desc ? "desc" : "asc"))
         );
 
-        const res = {
-            rows: sortedData.slice(pageSize * page, pageSize * page + pageSize),
-            pages: Math.ceil(filteredData.length / pageSize)
-        };
-
-        this.setState({
-            data: res.rows,
-            pages: res.pages,
-            loading: false});
-    }
-
-    async handleSubmit(event) {
-
-        event.preventDefault();
-        this.setState({ loading: true });
-        const {item} = this.state;
-
-        requestData(10, 0, null,
-                    item.lists, item.networks,
-                    item.text, item.userlogin);
-    }
-
-    async fetchData(state, instance) {
-
-        this.setState({ loading: true });
-        const {item} = this.state;
-
-        requestData(state.pageSize, state.page,
-                    state.sorted, item.lists,
-                    item.networks, item.text, item.userlogin);
+        console.log(sortedData)
+        const dataItem = {
+                        data: sortedData.slice(pageSize * page, pageSize * page + pageSize),
+                        pages: Math.ceil(sortedData.length / pageSize),
+                        loading: false,
+                        lists: item.lists,
+                        networks: item.networks,
+                        text: item.text,
+                        userlogin: item.userlogin,
+                        startDate: item.startDate,
+                        endDate: item.endDate
+                    };
+        console.log(dataItem);
+        this.setState({item: dataItem});
     }
 
     render() {
 
         const {item} = this.state;
-        const title = <h2>Lists of Posts from Social Media</h2>;
+        const title = <h2>Lists of Posts From Social Media Networks</h2>;
+
         return (
             <div>
                 <AppNavbar/>
                 <Container>
-                    {title}
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form onSubmit={this.fetchData}>
                         <InputGroup>
-                            <Input type="text" name="list" id="lists" value={item.lists || ''}
+                            <Input type="text" name="lists" id="lists" value={item.lists || ''}
                                    onChange={this.handleChange} autoComplete="lists" placeholder="List(s) that the Author belongs"
                                    style={{width: "370px"}} />
                         </InputGroup>
+                        <br />
                         <InputGroup>
                             <Input type="text" name="networks" id="networks" value={item.networks || ''}
                                    onChange={this.handleChange} autoComplete="networks" placeholder="Social Network(s) of the posts"
                                    style={{width: "370px"}} />
                         </InputGroup>
+                        <br />
                         <InputGroup>
                             <Input type="text" name="text" id="text" value={item.text || ''}
                                    onChange={this.handleChange} autoComplete="text" placeholder="Full text search on content"
                                    style={{width: "370px"}} />
                         </InputGroup>
+                        <br />
                         <InputGroup>
-                            <Input type="text" name="login" id="login" value={item.login || ''}
-                                   onChange={this.handleChange} autoComplete="login" placeholder="Login of the Author"
+                            <Input type="text" name="userlogin" id="userlogin" value={item.userlogin || ''}
+                                   onChange={this.handleChange} autoComplete="userlogin" placeholder="Login of the Author"
                                    style={{width: "370px"}} />
                         </InputGroup>
+                        <br />
+                        <FormGroup>
+                            <label>Created Date: From </label>{' '}
+                            <DatePicker
+                                selected={ item.startDate }
+                                onChange={ this.handleStartDateChange }
+                                name="startDate"
+                                dateFormat="dd/MM/yyyy"
+                            />{' '}
+                            <label>To </label>{' '}
+                            <DatePicker
+                                selected={ item.endDate }
+                                onChange={ this.handleEndDateChange }
+                                name="endDate"
+                                dateFormat="dd/MM/yyyy"
+                            />
+                        </FormGroup>
+                        <br />
                         <ButtonGroup>
-                            <Button color="primary" type="submit">Search</Button>
+                            <Button color="primary" onClick={this.fetchData} render="table">Search</Button>
                         </ButtonGroup>
                     </Form>
                     <br />
+                    {title}
                     <ReactTable
+                        id="table"
                         columns={[
                             {
                                 Header: "Author",
