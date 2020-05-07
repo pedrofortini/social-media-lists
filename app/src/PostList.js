@@ -19,10 +19,9 @@ class PostList extends Component {
         lists: '',
         networks: '',
         text: '',
-        userlogin: '',
         fullname: '',
-        startDate: new Date(),
-        endDate: new Date()
+        startDate: null,
+        endDate: null
     };
 
     constructor() {
@@ -64,9 +63,12 @@ class PostList extends Component {
 
         const {item} = this.state;
 
-        if (item.startDate.getTime() > item.endDate.getTime()){
-            alert("ERROR: Invalid Date Range! Please provide a valid one.");
-            return;
+        if(item.startDate !== null && item.endDate !== null) {
+
+            if (item.startDate.getTime() > item.endDate.getTime()) {
+                alert("ERROR: Invalid Date Range! Please provide a valid one.");
+                return;
+            }
         }
 
         const loadingItem =  {
@@ -76,7 +78,6 @@ class PostList extends Component {
             lists: item.lists,
             networks: item.networks,
             text: item.text,
-            userlogin: item.userlogin,
             fullname: item.fullname,
             startDate: item.startDate,
             endDate: item.endDate
@@ -87,10 +88,16 @@ class PostList extends Component {
         let page = state.page;
         let pageSize = state.pageSize;
         let sorted = state.sorted;
-        let startDate = format(item.startDate, "dd/MM/yyyy");
-        let endDate = format(item.endDate, "dd/MM/yyyy");
-        console.log(startDate);
-        console.log(endDate);
+
+        let startDate = '';
+        if(item.startDate !== null) {
+            startDate = format(item.startDate, "dd/MM/yyyy");
+        }
+
+        let endDate = '';
+        if(item.endDate !== null) {
+            endDate = format(item.endDate, "dd/MM/yyyy");
+        }
 
         if(page === undefined && pageSize === undefined && sorted === undefined){
 
@@ -104,7 +111,13 @@ class PostList extends Component {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'lists': item.lists,
+                    'networks': item.networks,
+                    'text': item.text,
+                    'fullname': item.fullname,
+                    'startDate': startDate,
+                    'endDate': endDate
                 }})).json();
 
         const sortedData = _.orderBy(
@@ -130,7 +143,6 @@ class PostList extends Component {
                         lists: item.lists,
                         networks: item.networks,
                         text: item.text,
-                        userlogin: item.userlogin,
                         fullname: item.fullname,
                         startDate: item.startDate,
                         endDate: item.endDate
@@ -151,25 +163,19 @@ class PostList extends Component {
                     <Form onSubmit={this.fetchData}>
                         <InputGroup>
                             <Input type="text" name="lists" id="lists" value={item.lists || ''}
-                                   onChange={this.handleChange} autoComplete="lists" placeholder="List(s) that the Author belongs"
+                                   onChange={this.handleChange} autoComplete="lists" placeholder="List(s) that the Author belongs. Example: List1, List2"
                                    style={{width: "370px"}} />
                         </InputGroup>
                         <br />
                         <InputGroup>
                             <Input type="text" name="networks" id="networks" value={item.networks || ''}
-                                   onChange={this.handleChange} autoComplete="networks" placeholder="Social Network(s) of the posts"
+                                   onChange={this.handleChange} autoComplete="networks" placeholder="Social Network(s) of the posts. Example: Facebook, Twitter"
                                    style={{width: "370px"}} />
                         </InputGroup>
                         <br />
                         <InputGroup>
                             <Input type="text" name="text" id="text" value={item.text || ''}
                                    onChange={this.handleChange} autoComplete="text" placeholder="Full text search on content"
-                                   style={{width: "370px"}} />
-                        </InputGroup>
-                        <br />
-                        <InputGroup>
-                            <Input type="text" name="userlogin" id="userlogin" value={item.userlogin || ''}
-                                   onChange={this.handleChange} autoComplete="userlogin" placeholder="Login of the Author"
                                    style={{width: "370px"}} />
                         </InputGroup>
                         <br />
@@ -195,7 +201,6 @@ class PostList extends Component {
                                 dateFormat="dd/MM/yyyy"
                             />
                         </FormGroup>
-                        <br />
                         <ButtonGroup>
                             <Button color="primary" onClick={this.fetchData} render="table">Search</Button>
                         </ButtonGroup>

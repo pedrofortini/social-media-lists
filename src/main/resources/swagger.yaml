@@ -10,7 +10,11 @@ host: localhost:8080
 basePath: /social-media-lists-api/v1
 tags:
   - name: Post
-    description: Operations regarding the posts of a Person on a Social Media Network
+    description: Operations regarding the Posts of a Person on a Social Media Network
+  - name: List
+    description: Operations regarding the Lists of People on the system
+  - name: Network
+    description: Operations regarding the Social Media Networks
 
 schemes:
   - http
@@ -51,11 +55,6 @@ paths:
           required: false
           type: string
           description: "Text to be searched on the content of the Post"
-        - name: userlogin
-          in: header
-          required: false
-          type: string
-          description: "Login of the Author of the Post on The Social Netowork the post was made"
         - name: fullname
           in: header
           required: false
@@ -85,6 +84,94 @@ paths:
         '404':
           description: "No Posts found"
 
+  /lists:
+    post:
+      tags:
+        - List
+      summary: Creates a List of People with Posts on Social Media Networks
+      operationId: savePeopleList
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          name: list
+          description: "List of People that is being saved"
+          required: true
+          schema:
+            $ref: '#/definitions/ListTemplate'
+      responses:
+        '200':
+          description: List of People data suscessfully saved
+        '500':
+          description: Internal error ocurred while saving List of People
+        '400':
+          description: Invalid List of People Request Provided
+
+    get:
+      tags:
+        - List
+      summary: Gets data from all Lists of People
+      operationId: getLists
+      produces:
+        - "application/json"
+      responses:
+        '200':
+          description: "List of People data suscessfully retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ListTemplate"
+        '500':
+          description: "Internal error ocurred while getting List of People data"
+        '400':
+          description: "Invalid Request"
+        '404':
+          description: "No Lists found"
+
+  /networks:
+    post:
+      tags:
+        - Network
+      summary: Creates a Social Media Network
+      operationId: saveNetwork
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          name: network
+          description: "Social Media Network that is being saved"
+          required: true
+          schema:
+            $ref: '#/definitions/SocialMediaNetworkTemplate'
+      responses:
+        '200':
+          description: Social Media Network data suscessfully saved
+        '500':
+          description: Internal error ocurred while saving Social Media Network
+        '400':
+          description: Invalid Social Media Network Request Provided
+
+    get:
+      tags:
+        - List
+      summary: Gets data from all Social Media Networks
+      operationId: getNetworks
+      produces:
+        - "application/json"
+      responses:
+        '200':
+          description: "Social Media Network data suscessfully retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/SocialMediaNetworkTemplate"
+        '500':
+          description: "Internal error ocurred while getting Social Media Network data"
+        '400':
+          description: "Invalid Request"
+        '404':
+          description: "No Social Media Network found"
+
 definitions:
   PostResponse:
     type: object
@@ -107,3 +194,77 @@ definitions:
       lists_belongs_to:
         type: string
         description: Names of the Lists the Author of the Post Belongs
+
+  ListTemplate:
+    type: object
+    required:
+      - name
+      - people
+    properties:
+      name:
+        type: string
+        description: Name of the List
+        minLength: 1
+      people:
+        type: array
+        description: List of People on the List
+        items:
+          $ref: '#/definitions/PersonTemplate'
+
+  PersonTemplate:
+    type: object
+    required:
+      - ssn
+      - fullname
+      - lists_belongs_to
+      - accounts
+    properties:
+      ssn:
+        type: integer
+        format: int64
+        description: SSN of the Person
+      fullname:
+        type: string
+        description: Fullname of the Person
+        minLength: 1
+      lists_belongs_to:
+        type: array
+        minItems: 1
+        description: List of People List the Person belongs
+        items:
+          type: string
+      accounts:
+        type: array
+        description: List of the accounts of the Person on Social Media Networks
+        items:
+          $ref: '#/definitions/SocialMediaAccountTemplate'
+
+  SocialMediaAccountTemplate:
+    type: object
+    required:
+      - login
+      - social_media_network
+    properties:
+      login:
+        type: string
+        description: Login of the Person
+        minLength: 1
+      social_media_network:
+        type: string
+        description: Name of the Social Media Network of the account
+        minLength: 1
+
+  SocialMediaNetworkTemplate:
+    type: object
+    required:
+      - login
+      - social_media_network
+    properties:
+      name:
+        type: string
+        description: Name of the Social Media Network
+        minLength: 1
+      main_page_link:
+        type: string
+        description: Main Page link of the Social Media Network
+        minLength: 1

@@ -1,7 +1,7 @@
 package com.social.media.lists.api.application.util;
 
 import com.social.media.lists.api.application.MessageConstants;
-import com.social.media.lists.api.application.exception.InvalidDateFormatException;
+import com.social.media.lists.api.application.exception.UnprocessableEntityException;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -21,12 +21,7 @@ public class DateUtil {
 
         } catch (ParseException e) {
 
-            throw new InvalidDateFormatException(
-                    String.format(MessageConstants.MESSAGE_INVALID_DATE_FORMAT, dateString));
-        }
-        catch (Exception e) {
-
-            throw new InvalidDateFormatException(
+            throw new UnprocessableEntityException(
                     String.format(MessageConstants.MESSAGE_INVALID_DATE_FORMAT, dateString));
         }
     }

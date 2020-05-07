@@ -1,12 +1,10 @@
 package com.social.media.lists.api.domain.posts;
 
-import com.social.media.lists.api.domain.networks.SocialMediaAccount;
 import com.social.media.lists.api.domain.networks.SocialMediaNetwork;
-import com.social.media.lists.api.domain.people.PeopleList;
 import com.social.media.lists.api.domain.people.Person;
+import com.social.media.lists.api.domain.people.SocialMediaAccount;
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
@@ -39,28 +37,23 @@ public class Post {
     private String linkPostOriginalNetwork;
 
     @DBRef
-    @Field("social_media_account")
-    private SocialMediaAccount account;
+    @Field("social_network")
+    private SocialMediaNetwork network;
 
-    /**
-     * Factory constructor for creating DbRefs
-     * @param id
-     */
-    private Post(String id) {
-        this.id = id;
-    }
+    @DBRef
+    @Field("person")
+    private Person person;
 
-    public static Post ref(String id) {
-        return new Post(id);
-    }
 
     public Post(){}
 
     public Post(String content, String linkPostOriginalNetwork,
-                final SocialMediaAccount account){
+                final SocialMediaNetwork network,
+                final Person person){
 
         this.content = content;
         this.linkPostOriginalNetwork = linkPostOriginalNetwork;
-        this.account = account;
+        this.network = network;
+        this.person = person;
     }
 }

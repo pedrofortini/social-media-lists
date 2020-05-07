@@ -18,11 +18,14 @@ import java.util.List;
 @RestController
 public class PostController implements PostsApi {
 
-   @Inject
    private PostService postService;
-
-   @Inject
    private PostResponseConverter postResponseConverter;
+
+   public PostController(PostService postService, PostResponseConverter postResponseConverter){
+
+       this.postService = postService;
+       this.postResponseConverter = postResponseConverter;
+   }
 
    @Override
    public ResponseEntity<List<PostResponse>> getPostsData(
@@ -31,13 +34,12 @@ public class PostController implements PostsApi {
            @RequestHeader(value="lists", required=false) String lists,
            @RequestHeader(value="networks", required=false) String networks,
            @RequestHeader(value="text", required=false) String text,
-           @RequestHeader(value="userlogin", required=false) String userlogin,
            @RequestHeader(value="fullname", required=false) String fullname,
            @RequestHeader(value="startDate", required=false) String startDate,
            @RequestHeader(value="endDate", required=false) String endDate) {
 
        List<Post> dataBasePosts = postService.getAllPostsByFilters(currentPage, pageSize, lists, networks, text,
-               userlogin, fullname, startDate, endDate);
+               fullname, startDate, endDate);
 
        List<PostResponse> responses = postResponseConverter.convert(dataBasePosts);
        return ResponseEntity.ok(responses);

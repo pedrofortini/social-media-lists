@@ -27,16 +27,6 @@ public class ApiExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
                 .body(gsonBuilder.toJson(exception.getMessage()));
     }
 
-    @ExceptionHandler(InvalidDateFormatException.class)
-    public ResponseEntity<?> handleInvalidDateFormatException(InvalidDateFormatException exception) {
-
-        Gson gsonBuilder = new GsonBuilder().create();
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(gsonBuilder.toJson(exception.getMessage()));
-    }
-
     @ExceptionHandler(PersistenceException.class)
     public ResponseEntity<?> handlePersistenceException(PersistenceException exception) {
 
@@ -67,8 +57,8 @@ public class ApiExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
                 .body(gsonBuilder.toJson(exception.getMessage()));
     }
 
-    @ExceptionHandler(UnprocessableEnityException.class)
-    public ResponseEntity<?> handleUnprocessableEntityException(UnprocessableEnityException exception) {
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ResponseEntity<?> handleUnprocessableEntityException(UnprocessableEntityException exception) {
 
         Gson gsonBuilder = new GsonBuilder().create();
 
