@@ -5,6 +5,7 @@ import com.social.media.lists.api.application.util.DateUtil;
 import com.social.media.lists.api.domain.posts.Post;
 import io.swagger.model.PostResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -17,14 +18,17 @@ import java.util.stream.Collectors;
 @Component
 public class PostResponseConverter {
 
-    public List<PostResponse> convert(List<Post> posts){
+    public List<PostResponse> convert(Page<Post> posts){
 
-        return posts.stream().map(post -> convert(post)).collect(Collectors.toList());
+        long numberOfPosts = posts.getTotalElements();
+        return posts.getContent().stream().map(post -> convert(post, numberOfPosts)).collect(Collectors.toList());
     }
 
-    private PostResponse convert(Post post){
+    private PostResponse convert(Post post, long numberOfPosts){
 
         PostResponse postResponse = new PostResponse();
+
+        postResponse.setNumberPages(numberOfPosts);
 
         if(Objects.nonNull(post.getCreatedDate())) postResponse.setCreatedDate(DateUtil.convertDateToString(post.getCreatedDate()));
         postResponse.setLinkOriginalPost(post.getLinkPostOriginalNetwork());

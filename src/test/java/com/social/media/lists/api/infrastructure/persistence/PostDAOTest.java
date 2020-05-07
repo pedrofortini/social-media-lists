@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,18 +29,21 @@ public class PostDAOTest {
     private PostDAO postDAO;
 
     private MongoTemplate mongoTemplate;
+    private PostRepository postRepository;
 
     @Before
     public void setUp() {
 
         this.mongoTemplate = PowerMockito.mock(MongoTemplate.class);
-        this.postDAO = new PostDAO(this.mongoTemplate);
+        this.postRepository = PowerMockito.mock(PostRepository.class);
+        this.postDAO = new PostDAO(this.mongoTemplate, this.postRepository);
     }
 
     @Test
-    public void shouldReturnEmptyListIfCurrentPageAndPageSizeParametersAreNull() {
+    public void shouldReturnPageWithEmptyListIfCurrentPageAndPageSizeParametersAreNull() {
 
-        assertThat(this.postDAO.getAllPostsByFilters(null, null, null)).isEmpty();
+        Page<Post> pageResult = this.postDAO.getAllPostsByFilters(null, null, null);
+        assertThat(pageResult.getContent()).isEmpty();
     }
 
     @Test

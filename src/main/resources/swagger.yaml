@@ -153,7 +153,7 @@ paths:
 
     get:
       tags:
-        - List
+        - Network
       summary: Gets data from all Social Media Networks
       operationId: getNetworks
       produces:
@@ -176,6 +176,10 @@ definitions:
   PostResponse:
     type: object
     properties:
+      number_pages:
+        type: integer
+        format: int64
+        description: Number of Pages on the Search
       created_date:
         type: string
         description: Date the Post was Posted

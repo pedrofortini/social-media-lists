@@ -37,17 +37,8 @@ public class SocialNetworkControllerIT {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<SocialMediaNetworkTemplate> entity = new HttpEntity<>(template, headers);
 
-        ResponseEntity<Void> response = restTemplate.exchange(
+        ResponseEntity<Void> responseSave = restTemplate.exchange(
                 createURLWithPort("/social-media-lists-api/v1/networks"), HttpMethod.POST, entity, Void.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void integratedTestGetAllSocialMediaNetworks() throws Exception {
-
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
                 createURLWithPort("/social-media-lists-api/v1/networks"), HttpMethod.GET, entity, String.class);
@@ -56,6 +47,7 @@ public class SocialNetworkControllerIT {
         ObjectMapper mapper = new ObjectMapper();
         List<SocialMediaNetworkTemplate> networks = Arrays.asList(mapper.readValue(stringSocialMediaNetworks, SocialMediaNetworkTemplate[].class));
 
+        assertThat(responseSave.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(networks).isNotEmpty();
         assertThat(networks.size()).isEqualTo(3);
     }

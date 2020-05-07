@@ -47,27 +47,19 @@ public class ListControllerIT {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<ListTemplate> entity = new HttpEntity<>(listTemplate, headers);
 
-        ResponseEntity<Void> response = restTemplate.exchange(
+        ResponseEntity<Void> responseSave = restTemplate.exchange(
                 createURLWithPort("/social-media-lists-api/v1/lists"), HttpMethod.POST, entity, Void.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void integratedTestGetAllPeopleLists() throws Exception {
-
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
+        ResponseEntity<String> responseFind = restTemplate.exchange(
                 createURLWithPort("/social-media-lists-api/v1/lists"), HttpMethod.GET, entity, String.class);
 
-        String stringPeopleLists = response.getBody();
+        String stringPeopleLists = responseFind.getBody();
         ObjectMapper mapper = new ObjectMapper();
         List<ListTemplate> peopleLists = Arrays.asList(mapper.readValue(stringPeopleLists, ListTemplate[].class));
 
+        assertThat(responseSave.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(peopleLists).isNotEmpty();
-        assertThat(peopleLists.size()).isEqualTo(2);
+        assertThat(peopleLists.size()).isEqualTo(3);
     }
 
     private String createURLWithPort(String uri) {

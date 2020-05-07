@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -37,11 +39,13 @@ public class PostControllerTest {
         Post post = new Post();
         PostResponse response = new PostResponse();
 
+        Page<Post> postPage = new PageImpl<>(Arrays.asList(post));
+
         PowerMockito.when(this.postService.getAllPostsByFilters(
                 0L, 10L, null, null,
-                null, null, null, null)).thenReturn(Arrays.asList(post));
+                null, null, null, null)).thenReturn(postPage);
 
-        PowerMockito.when(this.postResponseConverter.convert(Arrays.asList(post))).thenReturn(Arrays.asList(response));
+        PowerMockito.when(this.postResponseConverter.convert(postPage)).thenReturn(Arrays.asList(response));
 
         controller.getPostsData(0L, 10L, null, null,
                 null, null, null, null);
@@ -49,7 +53,7 @@ public class PostControllerTest {
         Mockito.verify(this.postService).getAllPostsByFilters(
                 0L, 10L, null, null,
                 null, null, null, null);
-        Mockito.verify(this.postResponseConverter).convert(Arrays.asList(post));
+        Mockito.verify(this.postResponseConverter).convert(postPage);
     }
 
     @Test
@@ -58,11 +62,13 @@ public class PostControllerTest {
         Post post = new Post();
         PostResponse response = new PostResponse();
 
+        Page<Post> postPage = new PageImpl<>(Arrays.asList(post));
+
         PowerMockito.when(this.postService.getAllPostsByFilters(
                 0L, 10L, null, null,
-                null, null, null, null)).thenReturn(Arrays.asList(post));
+                null, null, null, null)).thenReturn(postPage);
 
-        PowerMockito.when(this.postResponseConverter.convert(Arrays.asList(post))).thenReturn(Arrays.asList(response));
+        PowerMockito.when(this.postResponseConverter.convert(postPage)).thenReturn(Arrays.asList(response));
 
         ResponseEntity responseEntity = controller.getPostsData(0L, 10L, null, null,
                 null, null, null, null);

@@ -6,6 +6,7 @@ import com.social.media.lists.api.domain.networks.SocialMediaNetworkService;
 import com.social.media.lists.api.domain.people.PersonService;
 import com.social.media.lists.api.infrastructure.persistence.PostDAO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class PostService {
         this.socialMediaNetworkService = socialMediaNetworkService;
     }
 
-    public List<Post> getAllPostsByFilters(Long currentPage,
+    public Page<Post> getAllPostsByFilters(Long currentPage,
                                            Long pageSize,
                                            String lists,
                                            String networks,

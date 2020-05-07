@@ -7,6 +7,8 @@ import io.swagger.model.PostResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -36,7 +38,10 @@ public class PostResponseConverterTest {
         Post post = new Post("Test", "localhost", null, person);
         Date now = new Date();
         post.setCreatedDate(now);
-        List<PostResponse> responseList = this.responseConverter.convert(Arrays.asList(post));
+
+        Page<Post> postPage = new PageImpl<>(Arrays.asList(post));
+
+        List<PostResponse> responseList = this.responseConverter.convert(postPage);
 
         assertThat(responseList).isNotEmpty();
         assertThat(responseList.get(0).getAuthorName()).isNull();

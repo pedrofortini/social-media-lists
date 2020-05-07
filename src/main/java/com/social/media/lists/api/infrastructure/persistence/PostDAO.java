@@ -1,12 +1,11 @@
 package com.social.media.lists.api.infrastructure.persistence;
 
 import com.social.media.lists.api.domain.posts.Post;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -18,14 +17,19 @@ import java.util.Objects;
 public class PostDAO {
 
     private MongoTemplate mongoTemplate;
+    private PostRepository postRepository;
 
-    public PostDAO(MongoTemplate mongoTemplate){
+    public PostDAO(MongoTemplate mongoTemplate,
+                   PostRepository postRepository){
+
         this.mongoTemplate = mongoTemplate;
+        this.postRepository = postRepository;
     }
 
-    public List<Post> getAllPostsByFilters(Long currentPage,
+    public Page<Post> getAllPostsByFilters(Long currentPage,
                                            Long pageSize, List<Criteria> criteriaList){
 
+        List<Post> result = new ArrayList<>();
         if(Objects.nonNull(currentPage) && Objects.nonNull(pageSize)) {
 
             Pageable paginatedSortedByPostedDate =
@@ -39,9 +43,15 @@ public class PostDAO {
                 Criteria andOr = new Criteria().andOperator(criteriaList.toArray(new Criteria[criteriaList.size()]));
                 query.addCriteria(andOr);
             }
-            return mongoTemplate.find(query, Post.class);
+
+            result = mongoTemplate.find(query, Post.class);
+
+            long count = mongoTemplate.count(query, Post.class);
+            Page<Post> resultPage = new PageImpl<Post>(result , paginatedSortedByPostedDate, count);
+
+            return resultPage;
         }
 
-        return new ArrayList<>();
+        return new PageImpl<>(result);
     }
 }

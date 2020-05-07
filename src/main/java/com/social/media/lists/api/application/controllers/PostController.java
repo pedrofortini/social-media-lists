@@ -6,6 +6,7 @@ import com.social.media.lists.api.domain.posts.converter.PostResponseConverter;
 import io.swagger.annotations.ApiParam;
 import io.swagger.api.PostsApi;
 import io.swagger.model.PostResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +39,7 @@ public class PostController implements PostsApi {
            @RequestHeader(value="startDate", required=false) String startDate,
            @RequestHeader(value="endDate", required=false) String endDate) {
 
-       List<Post> dataBasePosts = postService.getAllPostsByFilters(currentPage, pageSize, lists, networks, text,
+       Page<Post> dataBasePosts = postService.getAllPostsByFilters(currentPage, pageSize, lists, networks, text,
                fullname, startDate, endDate);
 
        List<PostResponse> responses = postResponseConverter.convert(dataBasePosts);

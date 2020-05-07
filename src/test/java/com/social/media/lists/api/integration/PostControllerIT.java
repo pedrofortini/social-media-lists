@@ -28,23 +28,6 @@ public class PostControllerIT {
     TestRestTemplate restTemplate = new TestRestTemplate();
 
     @Test
-    public void integratedTestGetAllPostsPaginated() throws Exception {
-
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                createURLWithPort("/social-media-lists-api/v1/posts?currentPage=0&pageSize=10"), HttpMethod.GET, entity, String.class);
-
-        String stringPosts = response.getBody();
-        ObjectMapper mapper = new ObjectMapper();
-        List<PostResponse> posts = Arrays.asList(mapper.readValue(stringPosts, PostResponse[].class));
-
-        assertThat(posts).isNotEmpty();
-        assertThat(posts.size()).isEqualTo(10);
-    }
-
-    @Test
     public void integratedTestGetFilteredPostsPaginated() throws Exception {
 
         HttpHeaders headers = new HttpHeaders();

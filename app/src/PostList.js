@@ -120,6 +120,11 @@ class PostList extends Component {
                     'endDate': endDate
                 }})).json();
 
+        let numberOfPages = 0;
+        if(posts.length > 0){
+            numberOfPages = posts[0]['number_pages'];
+        }
+
         const sortedData = _.orderBy(
             posts,
             sorted.map(sort => {
@@ -135,10 +140,9 @@ class PostList extends Component {
             sorted.map(d => (d.desc ? "desc" : "asc"))
         );
 
-        console.log(sortedData)
         const dataItem = {
-                        data: sortedData.slice(pageSize * page, pageSize * page + pageSize),
-                        pages: Math.ceil(sortedData.length / pageSize),
+                        data: sortedData,
+                        pages: numberOfPages,
                         loading: false,
                         lists: item.lists,
                         networks: item.networks,
@@ -147,7 +151,6 @@ class PostList extends Component {
                         startDate: item.startDate,
                         endDate: item.endDate
                     };
-        console.log(dataItem);
         this.setState({item: dataItem});
     }
 
